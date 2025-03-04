@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const { dbConnection } = require('./database/config');
 const cors = require('cors');
+const path = require('path');
 
 //Crear el servidor de express
 const app =  express();
@@ -20,9 +21,10 @@ app.use( express.json() );
 //Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events', require('./routes/events'));
-// TODO: auth // crear, login, renew
 
-// TODO: CRUD: Eventos
+app.use('*', (req,res) => { //redirección a index.html
+    res.sendFile( path.join( __dirname,  '/public/index.html') );
+} );
 
 
 // Escuchar peticiones

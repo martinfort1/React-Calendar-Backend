@@ -10,22 +10,39 @@ const app =  express();
 dbConnection();
 
 // CORS 
-app.use(cors())
+const corsOptions = {
+    origin: '*',  // Permite cualquier origen 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization,x-token'
+};
+app.use(cors( corsOptions))
 
 //Directorio Público
-app.use( express.static('public')); //middleware  función que se ejecuta en el momento que alguien hace una peticion a mi servidor
+app.use( express.static( path.join(__dirname, 'public')));
+
+//Asegurar MIME type de archivos .js y .css en la carpeta assets
+app.use( '/assets', express.static(path.join(__dirname, 'public', 'assets'),{
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+        else if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+}));
+
 //Lectura y parseo del body
 app.use( express.json() );
-
 
 //Rutas
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events', require('./routes/events'));
 
-app.use('*', (req,res) => { //redirección a index.html
+//Manejar otras rutas
+app.get('*', (req,res) => { 
     res.sendFile( path.join( __dirname,  '/public/index.html') );
 } );
-
 
 // Escuchar peticiones
 app.listen( process.env.PORT, () => {

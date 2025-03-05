@@ -45,6 +45,11 @@ app.get('*', (req,res) => {
 } );
 
 // Escuchar peticiones
-app.listen( process.env.PORT, () => {
-    console.log(`Servidor corriendo en puerto: ${ process.env.PORT }` )
-})
+if(require.main === module){
+    const port = process.env.PORT || 4000;
+    app.listen( port, () => {
+        console.log(`Servidor corriendo en puerto: ${ port }` )
+    });
+};
+
+module.exports = app;

@@ -8,8 +8,9 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/index.js"
+      "src": "/assets/(.*)",
+      "headers": { "Content-Type": "application/javascript" },
+      "dest": "/public/assets/$1"
     }
   ]
 }
